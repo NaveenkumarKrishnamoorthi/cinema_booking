@@ -19,19 +19,29 @@
         <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMain">
-            @auth
-                <ul class="navbar-nav me-auto">
-                    @if(auth()->user()->isAdmin())
-                        <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('admin.movies.index') }}">Movies</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('admin.bookings.index') }}">Bookings</a></li>
-                    @else
-                        <li class="nav-item"><a class="nav-link" href="{{ route('customer.dashboard') }}">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('customer.movies.index') }}">Movies</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('customer.bookings.index') }}">My Bookings</a></li>
-                    @endif
-                </ul>
-            @endauth
+           
+        <ul class="navbar-nav me-auto">
+    @auth
+        @if(auth()->user()->isAdmin())
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.movies.index') }}">Movies</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.bookings.index') }}">Bookings</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.organizer-requests.index') }}">
+                    Organizer Requests
+                </a>
+            </li>
+        @elseif(auth()->user()->isOrganizer())
+            <li class="nav-item"><a class="nav-link" href="{{ route('organizer.dashboard') }}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('organizer.movies.index') }}">My Movies</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('organizer.bookings.index') }}">Bookings</a></li>
+        @else
+            <li class="nav-item"><a class="nav-link" href="{{ route('customer.dashboard') }}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('customer.movies.index') }}">Movies</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('customer.bookings.index') }}">My Bookings</a></li>
+        @endif
+    @endauth
+</ul>
 
             <div class="ms-auto d-flex align-items-center">
                 @auth
