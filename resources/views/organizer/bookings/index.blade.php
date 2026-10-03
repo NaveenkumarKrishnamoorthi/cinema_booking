@@ -21,7 +21,7 @@
         </div>
     </form>
 
-    <table class="table table-bordered bg-white">
+    <table class="table table-bordered bg-white align-middle">
         <thead class="table-dark">
             <tr>
                 <th>Booking ID</th>
@@ -29,6 +29,7 @@
                 <th>Movie</th>
                 <th>Seats</th>
                 <th>Total</th>
+                <th>Show Time</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -36,10 +37,14 @@
             @forelse($bookings as $booking)
                 <tr>
                     <td><span class="font-monospace small">{{ $booking->booking_code }}</span></td>
-                    <td>{{ $booking->user->name }}</td>
+                    <td>
+                        {{ $booking->user->name }}<br>
+                        <small class="text-muted">{{ $booking->user->email }}</small>
+                    </td>
                     <td>{{ $booking->movie->title }}</td>
                     <td>{{ $booking->seats }}</td>
                     <td>${{ number_format($booking->total_price, 2) }}</td>
+                    <td>{{ $booking->show_time->format('M d, Y H:i') }}</td>
                     <td>
                         <span class="badge bg-{{
                             $booking->status === 'confirmed' ? 'success' :
@@ -48,7 +53,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="6" class="text-center py-4">No bookings found.</td></tr>
+                <tr><td colspan="7" class="text-center py-4">No bookings for your movies yet.</td></tr>
             @endforelse
         </tbody>
     </table>

@@ -13,12 +13,13 @@ class AuthController extends Controller
     public function index()
     {
         if (Auth::check()) {
-             return match (Auth::user()->role) {
-            'admin'     => redirect()->route('admin.dashboard'),
-            'organizer' => redirect()->route('organizer.dashboard'),
-            default     => redirect()->route('customer.dashboard'),
-        };
+            return match (Auth::user()->role) {
+                'admin'     => redirect()->route('admin.dashboard'),
+                'organizer' => redirect()->route('organizer.dashboard'),
+                default     => redirect()->route('customer.dashboard'),
+            };
         }
+
         return view('index');
     }
 
@@ -39,12 +40,12 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-           return match (Auth::user()->role) {
-        'admin'     => redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!'),
-        'organizer' => redirect()->route('organizer.dashboard')->with('success', 'Welcome Organizer!'),
-        default     => redirect()->route('customer.dashboard')->with('success', 'Welcome back!'),
-    };
-}
+            return match (Auth::user()->role) {
+                'admin'     => redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!'),
+                'organizer' => redirect()->route('organizer.dashboard')->with('success', 'Welcome Organizer!'),
+                default     => redirect()->route('customer.dashboard')->with('success', 'Welcome back!'),
+            };
+        }
 
         return back()->withErrors([
             'email' => 'Invalid credentials provided.',

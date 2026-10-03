@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MovieController extends Controller
 {
+    
     public function index()
     {
         $movies = Movie::where('organizer_id', Auth::id())
@@ -19,11 +20,13 @@ class MovieController extends Controller
         return view('organizer.movies.index', compact('movies'));
     }
 
+   
     public function create()
     {
         return view('organizer.movies.create');
     }
 
+  
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -54,6 +57,7 @@ class MovieController extends Controller
         return view('organizer.movies.edit', compact('movie'));
     }
 
+  
     public function update(Request $request, Movie $movie)
     {
         $this->authorizeOwnership($movie);
@@ -70,9 +74,10 @@ class MovieController extends Controller
             'status'       => 'required|in:active,inactive',
         ]);
 
-        if ($data['total_seats'] !== $movie->total_seats) {
+        // Recalculate available seats if total seats changed
+        if ((int) $data['total_seats'] !== (int) $movie->total_seats) {
             $bookedSeats = $movie->total_seats - $movie->available_seats;
-            $data['available_seats'] = max(0, $data['total_seats'] - $bookedSeats);
+            $data['available_seats'] = max(0, (int) $data['total_seats'] - $bookedSeats);
         }
 
         $movie->update($data);
@@ -81,6 +86,7 @@ class MovieController extends Controller
             ->with('success', 'Movie updated successfully.');
     }
 
+    
     public function destroy(Movie $movie)
     {
         $this->authorizeOwnership($movie);
@@ -106,7 +112,7 @@ class MovieController extends Controller
         return back()->with('success', 'Movie status updated.');
     }
 
-   
+    
     public function bookings(Request $request)
     {
         $query = Booking::with(['user', 'movie'])
@@ -117,7 +123,7 @@ class MovieController extends Controller
             $query->where('status', $request->status);
         }
 
-        $bookings = $query->paginate(15);
+        $bookings = $query->paginate(15)->withQueryString();
 
         return view('organizer.bookings.index', compact('bookings'));
     }
@@ -125,7 +131,7 @@ class MovieController extends Controller
    
     private function authorizeOwnership(Movie $movie): void
     {
-        if ($movie->organizer_id !== Auth::id()) {
+        if ((int) $movie->organizer_id !== (int) Auth::id()) {
             abort(403, 'You do not have permission to manage this movie.');
         }
     }
