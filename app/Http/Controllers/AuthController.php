@@ -13,9 +13,11 @@ class AuthController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            return Auth::user()->isAdmin()
-                ? redirect()->route('admin.dashboard')
-                : redirect()->route('customer.dashboard');
+             return match (Auth::user()->role) {
+            'admin'     => redirect()->route('admin.dashboard'),
+            'organizer' => redirect()->route('organizer.dashboard'),
+            default     => redirect()->route('customer.dashboard'),
+        };
         }
         return view('index');
     }
