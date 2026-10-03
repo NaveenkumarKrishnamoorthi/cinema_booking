@@ -19,8 +19,8 @@ class OrganizerRequestController extends Controller
                 ->with('info', 'You are already an organizer.');
         }
 
-        f ($user->hasPendingOrganizerRequest()) {
-            return redirect()->route('customer.organizer-request.status')
+        if ($user->hasPendingOrganizerRequest()){
+            return redirect()->route('customer.organizer-request.status')   
                 ->with('info', 'Your organizer request is pending review.');
         }
 
