@@ -37,14 +37,12 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            if (Auth::user()->isAdmin()) {
-                return redirect()->route('admin.dashboard')
-                    ->with('success', 'Welcome Admin!');
-            }
-
-            return redirect()->route('customer.dashboard')
-                ->with('success', 'Welcome back!');
-        }
+           return match (Auth::user()->role) {
+        'admin'     => redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!'),
+        'organizer' => redirect()->route('organizer.dashboard')->with('success', 'Welcome Organizer!'),
+        default     => redirect()->route('customer.dashboard')->with('success', 'Welcome back!'),
+    };
+}
 
         return back()->withErrors([
             'email' => 'Invalid credentials provided.',
