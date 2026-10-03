@@ -12,4 +12,15 @@ class OrganizerRequest extends Model
         'status',
         'reviewed_at',
         'reviewed_by',
-   
+    ];
+
+    protected $casts = [
+        'reviewed_at' => 'datetime',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    
