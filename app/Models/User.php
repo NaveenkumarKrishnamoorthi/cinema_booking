@@ -44,4 +44,30 @@ class User extends Authenticatable
     {
         return $this->role === 'customer';
     }
+
+
+public function organizerRequests()
+{
+    return $this->hasMany(OrganizerRequest::class);
+}
+
+public function movies()
+{
+    return $this->hasMany(Movie::class, 'organizer_id');
+}
+
+public function isOrganizer(): bool
+{
+    return $this->role === 'organizer';
+}
+
+public function hasPendingOrganizerRequest(): bool
+{
+    return $this->organizerRequests()->where('status', 'pending')->exists();
+}
+
+public function latestOrganizerRequest()
+{
+    return $this->organizerRequests()->latest()->first();
+}
 }
