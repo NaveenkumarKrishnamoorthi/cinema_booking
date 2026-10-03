@@ -6,6 +6,16 @@
     <h2>Welcome, {{ auth()->user()->name }} 🎬</h2>
     <p class="text-muted">Browse movies and view your bookings below.</p>
 
+    @if(auth()->user()->hasPendingOrganizerRequest())
+    <a href="{{ route('customer.organizer-request.status') }}" class="btn btn-warning">
+         Organizer Request Pending
+    </a>
+@else
+    <a href="{{ route('customer.organizer-request.create') }}" class="btn btn-outline-warning">
+         Request to Become Organizer
+    </a>
+@endif
+
     <div class="row mb-3">
         <div class="col-md-4">
             <div class="card text-white bg-primary">
