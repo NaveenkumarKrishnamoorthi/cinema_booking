@@ -43,6 +43,7 @@ Route::middleware(['auth', 'role:admin'])
     });
 
 // ====================== CUSTOMER ======================
+
 Route::middleware(['auth', 'role:customer'])
     ->prefix('customer')
     ->name('customer.')
