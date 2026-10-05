@@ -43,7 +43,7 @@
                     </td>
                     <td>{{ $booking->movie->title }}</td>
                     <td>{{ $booking->seats }}</td>
-                    <td>${{ number_format($booking->total_price, 2) }}</td>
+                    <td>₹{{ number_format($booking->total_price, 2) }}</td>
                     <td>{{ $booking->show_time->format('M d, Y H:i') }}</td>
                     <td>
                         <span class="badge bg-{{

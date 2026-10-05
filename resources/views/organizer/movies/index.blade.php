@@ -4,11 +4,11 @@
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>My Movies</h2>
+        <h2> My Movies</h2>
         <a href="{{ route('organizer.movies.create') }}" class="btn btn-primary">+ Add Movie</a>
     </div>
 
-    <table class="table table-bordered bg-white">
+    <table class="table table-bordered bg-white align-middle">
         <thead class="table-dark">
             <tr>
                 <th>Poster</th>
@@ -25,15 +25,14 @@
                 <tr>
                     <td>
                         @if($movie->poster)
-                            <img src="{{ $movie->poster }}" alt=""
-                                 style="width:50px;height:70px;object-fit:cover;">
+                            <img src="{{ $movie->poster }}" style="width:50px;height:70px;object-fit:cover;">
                         @else
                             <span class="text-muted">—</span>
                         @endif
                     </td>
                     <td>{{ $movie->title }}</td>
                     <td>{{ $movie->genre }}</td>
-                    <td>${{ number_format($movie->price, 2) }}</td>
+                    <td>₹{{ number_format($movie->price, 2) }}</td>
                     <td>{{ $movie->available_seats }} / {{ $movie->total_seats }}</td>
                     <td>
                         <span class="badge {{ $movie->status === 'active' ? 'bg-success' : 'bg-secondary' }}">

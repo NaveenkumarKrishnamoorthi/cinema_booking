@@ -17,7 +17,7 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <label class="form-label">Duration (minutes) *</label>
+        <label class="form-label">Duration (min) *</label>
         <input type="number" name="duration" class="form-control" min="1"
                value="{{ old('duration', $movie->duration ?? '') }}" required>
     </div>
@@ -53,4 +53,23 @@
         <input type="text" name="poster" class="form-control"
                value="{{ old('poster', $movie->poster ?? '') }}">
     </div>
+
+    {{-- Owner assignment — shown only when $organizers is passed --}}
+    @isset($organizers)
+        <div class="col-12 mb-3">
+            <label class="form-label">Assign to Organizer</label>
+            <select name="organizer_id" class="form-select">
+                <option value="">— Admin owned (no organizer) —</option>
+                @foreach($organizers as $org)
+                    <option value="{{ $org->id }}"
+                        {{ (string) old('organizer_id', $movie->organizer_id ?? '') === (string) $org->id ? 'selected' : '' }}>
+                        {{ $org->name }} ({{ $org->email }})
+                    </option>
+                @endforeach
+            </select>
+            <small class="text-muted">
+                Leave blank for admin-owned movies. Organizers can only manage movies assigned to them.
+            </small>
+        </div>
+    @endisset
 </div>

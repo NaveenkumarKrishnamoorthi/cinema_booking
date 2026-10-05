@@ -41,4 +41,14 @@ class Movie extends Model
     {
         return $this->available_seats >= $count;
     }
+
+    public function organizer()
+{
+    return $this->belongsTo(User::class, 'organizer_id');
+}
+
+public function isAdminOwned(): bool
+{
+    return is_null($this->organizer_id);
+}
 }

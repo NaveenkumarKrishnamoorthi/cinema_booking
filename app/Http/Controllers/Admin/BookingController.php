@@ -37,12 +37,12 @@ class BookingController extends Controller
         $old = $booking->status;
         $new = $request->status;
 
-        // If cancelling a previously confirmed booking, return seats
+        
         if ($old !== 'cancelled' && $new === 'cancelled') {
             $booking->movie->increment('available_seats', $booking->seats);
         }
 
-        // If reactivating a cancelled booking, take seats back (if available)
+       
         if ($old === 'cancelled' && $new !== 'cancelled') {
             if (!$booking->movie->hasSeats($booking->seats)) {
                 return back()->with('error', 'Not enough available seats to reactivate this booking.');

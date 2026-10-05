@@ -26,18 +26,44 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
+    /* ============================================================
+     |  Relationships
+     * ============================================================ */
+
+    /** Bookings made by this user (as a customer) */
     public function bookings()
     {
         return $this->hasMany(Booking::class);
     }
 
+    /** Movies owned by this user (as an organizer) */
+    public function movies()
+    {
+        return $this->hasMany(Movie::class, 'organizer_id');
+    }
+
+    /** Organizer requests submitted by this user */
+    public function organizerRequests()
+    {
+        return $this->hasMany(OrganizerRequest::class);
+    }
+
+    /* ============================================================
+     |  Role checks
+     * ============================================================ */
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function isOrganizer(): bool
+    {
+        return $this->role === 'organizer';
     }
 
     public function isCustomer(): bool
@@ -45,29 +71,37 @@ class User extends Authenticatable
         return $this->role === 'customer';
     }
 
+    /* ============================================================
+     |  Organizer request helpers
+     * ============================================================ */
 
-public function organizerRequests()
-{
-    return $this->hasMany(OrganizerRequest::class);
-}
+    /** Does this user have a pending organizer request? */
+    public function hasPendingOrganizerRequest(): bool
+    {
+        return $this->organizerRequests()
+            ->where('status', 'pending')
+            ->exists();
+    }
 
-public function movies()
-{
-    return $this->hasMany(Movie::class, 'organizer_id');
-}
+    /** Most recent organizer request (any status), or null */
+    public function latestOrganizerRequest()
+    {
+        return $this->organizerRequests()->latest()->first();
+    }
 
-public function isOrganizer(): bool
-{
-    return $this->role === 'organizer';
-}
+    /* ============================================================
+     |  Convenience helpers (optional but useful)
+     * ============================================================ */
 
-public function hasPendingOrganizerRequest(): bool
-{
-    return $this->organizerRequests()->where('status', 'pending')->exists();
-}
+    /** Total confirmed revenue from this organizer's movies */
+    public function totalRevenue(): float
+    {
+        if (!$this->isOrganizer()) {
+            return 0.0;
+        }
 
-public function latestOrganizerRequest()
-{
-    return $this->organizerRequests()->latest()->first();
-}
+        return (float) Booking::whereHas('movie', fn($q) => $q->where('organizer_id', $this->id))
+            ->where('status', 'confirmed')
+            ->sum('total_price');
+    }
 }

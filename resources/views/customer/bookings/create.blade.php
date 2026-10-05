@@ -19,7 +19,7 @@
                         <div class="col-md-8">
                             <p><strong>Genre:</strong> {{ $movie->genre }}</p>
                             <p><strong>Duration:</strong> {{ $movie->duration }} min</p>
-                            <p><strong>Price per ticket:</strong> ${{ number_format($movie->price, 2) }}</p>
+                            <p><strong>Price per ticket:</strong> ₹{{ number_format($movie->price, 2) }}</p>
                             <p><strong>Available seats:</strong> {{ $movie->available_seats }}</p>
                         </div>
                     </div>

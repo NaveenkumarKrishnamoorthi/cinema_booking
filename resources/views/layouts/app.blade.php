@@ -14,7 +14,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> 
     <div class="container">
-        <a class="navbar-brand" href="{{ route('index') }}">🎬 MovieBooking</a>
+        <a class="navbar-brand" href="{{ route('index') }}">MovieBooking</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">  
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -26,15 +26,20 @@
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.movies.index') }}">Movies</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.bookings.index') }}">Bookings</a></li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.organizer-requests.index') }}">
-                    Organizer Requests
-                </a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.organizer-requests.index') }}">Requests</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.organizers.index') }}">Organizers</a></li>
+
         @elseif(auth()->user()->isOrganizer())
-            <li class="nav-item"><a class="nav-link" href="{{ route('organizer.dashboard') }}">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('organizer.movies.index') }}">My Movies</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('organizer.bookings.index') }}">Bookings</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('organizer.dashboard') }}">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('organizer.movies.index') }}">My Movies</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('organizer.bookings.index') }}">Bookings</a>
+            </li>
+
         @else
             <li class="nav-item"><a class="nav-link" href="{{ route('customer.dashboard') }}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('customer.movies.index') }}">Movies</a></li>

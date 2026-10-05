@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MovieController extends Controller
 {
-    
+
     public function index()
     {
         $movies = Movie::where('organizer_id', Auth::id())
@@ -20,13 +20,11 @@ class MovieController extends Controller
         return view('organizer.movies.index', compact('movies'));
     }
 
-   
     public function create()
     {
         return view('organizer.movies.create');
     }
 
-  
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -41,7 +39,7 @@ class MovieController extends Controller
             'status'       => 'required|in:active,inactive',
         ]);
 
-        $data['organizer_id']    = Auth::id();
+        $data['organizer_id']    = Auth::id();       // 🔒 always force ownership
         $data['available_seats'] = $data['total_seats'];
 
         Movie::create($data);
@@ -50,6 +48,7 @@ class MovieController extends Controller
             ->with('success', 'Movie added successfully.');
     }
 
+  
     public function edit(Movie $movie)
     {
         $this->authorizeOwnership($movie);
@@ -57,7 +56,7 @@ class MovieController extends Controller
         return view('organizer.movies.edit', compact('movie'));
     }
 
-  
+    
     public function update(Request $request, Movie $movie)
     {
         $this->authorizeOwnership($movie);
@@ -74,10 +73,9 @@ class MovieController extends Controller
             'status'       => 'required|in:active,inactive',
         ]);
 
-        // Recalculate available seats if total seats changed
         if ((int) $data['total_seats'] !== (int) $movie->total_seats) {
-            $bookedSeats = $movie->total_seats - $movie->available_seats;
-            $data['available_seats'] = max(0, (int) $data['total_seats'] - $bookedSeats);
+            $booked = $movie->total_seats - $movie->available_seats;
+            $data['available_seats'] = max(0, (int) $data['total_seats'] - $booked);
         }
 
         $movie->update($data);
@@ -86,13 +84,13 @@ class MovieController extends Controller
             ->with('success', 'Movie updated successfully.');
     }
 
-    
     public function destroy(Movie $movie)
     {
         $this->authorizeOwnership($movie);
 
         if ($movie->bookings()->exists()) {
-            return back()->with('error', 'Cannot delete a movie with bookings. Deactivate it instead.');
+            return back()->with('error',
+                'Cannot delete a movie with bookings. Deactivate it instead.');
         }
 
         $movie->delete();
@@ -100,6 +98,7 @@ class MovieController extends Controller
         return redirect()->route('organizer.movies.index')
             ->with('success', 'Movie deleted successfully.');
     }
+
 
     public function toggleStatus(Movie $movie)
     {
@@ -112,7 +111,7 @@ class MovieController extends Controller
         return back()->with('success', 'Movie status updated.');
     }
 
-    
+
     public function bookings(Request $request)
     {
         $query = Booking::with(['user', 'movie'])
@@ -128,7 +127,6 @@ class MovieController extends Controller
         return view('organizer.bookings.index', compact('bookings'));
     }
 
-   
     private function authorizeOwnership(Movie $movie): void
     {
         if ((int) $movie->organizer_id !== (int) Auth::id()) {

@@ -1,4 +1,3 @@
-@'
 @extends('layouts.app')
 
 @section('title', 'Movies')
@@ -25,7 +24,7 @@
                         <p class="small text-muted mb-2">
                             {{ $movie->genre }} • {{ $movie->duration }} min
                         </p>
-                        <p class="mb-1"><strong>${{ number_format($movie->price, 2) }}</strong></p>
+                        <p class="mb-1"><strong>₹{{ number_format($movie->price, 2) }}</strong></p>
                         <p class="small mb-2">Seats left: {{ $movie->available_seats }}</p>
 
                         <div class="mt-auto">
